@@ -1,11 +1,13 @@
+import { Link } from "react-router";
+
 const Navbar = () => {
   const navLinks = (
     <>
       <li>
-        <a>Home</a>
+        <Link to="/secret">Secret</Link>
       </li>
       <li>
-        <a>Secret</a>
+        <Link to="/about">About Us</Link>
       </li>
     </>
   );
@@ -37,7 +39,9 @@ const Navbar = () => {
             {navLinks}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Link to="/" className="btn btn-ghost text-xl">
+          AuthHub
+        </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navLinks}</ul>
