@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import authClient from "../services/authClient";
 
 const useAuth = () => {
+  const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // get token
   const getToken = () => {
@@ -10,6 +12,33 @@ const useAuth = () => {
     return token ? JSON.parse(token) : null;
   };
   const [authTokens, setAuthTokens] = useState(getToken());
+
+  // Fetch user Profile
+
+  useEffect(() => {
+    if (authTokens) {
+      fetchUserProfile();
+    } else {
+      setLoading(false);
+    }
+  }, [authTokens]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await authClient.get("/auth/users/me", {
+        headers: { Authorization: `JWT ${authTokens?.access}` },
+      });
+      setUser(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setUser(null);
+      setAuthTokens(null);
+      localStorage.removeItem("authTokens");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // login user
   const loginUser = async (userData) => {
@@ -52,7 +81,23 @@ const useAuth = () => {
     }
   };
 
-  return { loginUser, errorMessage, registerUser };
+  // Logout User
+  const logoutUser = () => {
+    setAuthTokens(null);
+    setUser(null);
+    localStorage.removeItem("authTokens");
+    localStorage.removeItem("cartId");
+  };
+
+  return {
+    loginUser,
+    loading,
+    errorMessage,
+    registerUser,
+    fetchUserProfile,
+    user,
+    logoutUser,
+  };
 };
 
 export default useAuth;
