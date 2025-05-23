@@ -8,6 +8,7 @@ import ResetPass from "../Components/Reset_Password/ResetPass";
 import About from "../Components/About/About";
 import Secret from "../Components/Secret/Secret";
 import PrivateRoute from "../Components/PrivateRoute/PrivateRoute";
+import ActivateAccount from "../Components/ActivateAccount/ActivateAccount";
 
 const isLoggedIn = true;
 export const router = createBrowserRouter([
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
         children: [{ path: "/secret", Component: Secret }],
       },
       { path: "/about", Component: About },
+      { path: "activate/:uid/:token", Component: ActivateAccount },
     ],
   },
   {

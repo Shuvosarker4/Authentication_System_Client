@@ -1,19 +1,58 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import useAuthContext from "../../hooks/useAuthContext";
+import ErrorMessageAlert from "../ErrorMessage/ErrorMessageAlert";
+import SuccessMessageAlert from "../SuccessMessage/SuccessMessageAlert";
 
 const Login = () => {
+  const { loginUser, errorMessage } = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onsubmit = (data) => {
-    console.log(data);
+  const navigate = useNavigate();
+  const [redirecting, setRedirecting] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const [loading, setLoading] = useState(false);
+
+  const onsubmit = async (data) => {
+    setLoading(true);
+    try {
+      const result = await loginUser(data);
+      reset();
+      if (result.success) {
+        setRedirecting(true);
+        setCountdown(3);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (redirecting) {
+      const countdownInterval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+
+      const timeout = setTimeout(() => {
+        navigate("/");
+      }, 3000);
+
+      return () => {
+        clearInterval(countdownInterval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [redirecting, navigate]);
 
   return (
     <div className="min-h-screen bg-base-200 px-4 py-6 flex flex-col items-center justify-center relative">
@@ -31,6 +70,12 @@ const Login = () => {
       {/* Login Card */}
       <div className="card w-full max-w-md shadow-xl bg-base-100 mt-12 sm:mt-0">
         <div className="card-body pt-10">
+          {errorMessage && <ErrorMessageAlert error={errorMessage} />}
+          {redirecting && (
+            <SuccessMessageAlert
+              message={`Login successful! Redirecting... ${countdown}`}
+            />
+          )}
           <h2 className="text-2xl font-bold text-center">Login</h2>
 
           <form onSubmit={handleSubmit(onsubmit)} className="space-y-4 mt-4">
@@ -89,8 +134,12 @@ const Login = () => {
               </label>
             </div>
 
-            <button type="submit" className="btn btn-primary w-full">
-              Login
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full"
+            >
+              {loading ? "Logging In..." : "Login"}
             </button>
           </form>
 

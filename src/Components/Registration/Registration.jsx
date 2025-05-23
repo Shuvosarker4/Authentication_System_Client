@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import useAuthContext from "../../hooks/useAuthContext";
+import { useState } from "react";
+import ErrorMessageAlert from "../ErrorMessage/ErrorMessageAlert";
+import SuccessMessageAlert from "../SuccessMessage/SuccessMessageAlert";
 
 const Registration = () => {
   const {
+    reset,
     register,
     handleSubmit,
     watch,
@@ -11,9 +16,20 @@ const Registration = () => {
 
   const password = watch("password");
 
-  const onSubmit = (data) => {
+  const { registerUser, errorMessage } = useAuthContext();
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const onSubmit = async (data) => {
     delete data.confirmPassword;
-    console.log("Registration Data:", data);
+    try {
+      const result = await registerUser(data);
+      if (result.success) {
+        setSuccessMsg(result.message);
+        reset();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -30,6 +46,8 @@ const Registration = () => {
 
       <div className="card w-full max-w-lg shadow-xl bg-base-100 mt-12 sm:mt-0">
         <div className="card-body">
+          {errorMessage && <ErrorMessageAlert error={errorMessage} />}
+          {successMsg && <SuccessMessageAlert message={successMsg} />}
           <h2 className="text-2xl font-bold text-center">Create an Account</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
@@ -42,7 +60,7 @@ const Registration = () => {
                   type="text"
                   placeholder="John"
                   className="input input-bordered w-full"
-                  {...register("firstName", {
+                  {...register("first_name", {
                     required: "First name is required",
                   })}
                 />
@@ -61,7 +79,7 @@ const Registration = () => {
                   type="text"
                   placeholder="Doe"
                   className="input input-bordered w-full"
-                  {...register("lastName", {
+                  {...register("last_name", {
                     required: "Last name is required",
                   })}
                 />
@@ -154,7 +172,7 @@ const Registration = () => {
                 type="tel"
                 placeholder="+1 234 567 8901"
                 className="input input-bordered w-full"
-                {...register("phone")}
+                {...register("phone_number")}
               />
             </div>
 
