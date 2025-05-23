@@ -124,6 +124,20 @@ const useAuth = () => {
     localStorage.removeItem("cartId");
   };
 
+  const resetPassword = async (email) => {
+    setErrorMessage("");
+    try {
+      await authClient.post("auth/users/reset_password/", email);
+      return {
+        success: true,
+        message:
+          "Reset link successful send.Check your email to reset your password.",
+      };
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
   return {
     loginUser,
     loading,
@@ -134,6 +148,7 @@ const useAuth = () => {
     logoutUser,
     updateUserProfile,
     changePassword,
+    resetPassword,
   };
 };
 

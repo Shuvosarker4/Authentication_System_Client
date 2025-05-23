@@ -1,21 +1,38 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import useAuthContext from "../../hooks/useAuthContext";
+import { useState } from "react";
+import ErrorMessageAlert from "../ErrorMessage/ErrorMessageAlert";
+import SuccessMessageAlert from "../SuccessMessage/SuccessMessageAlert";
 
 const ResetPass = () => {
+  const { resetPassword, errorMessage } = useAuthContext();
+  const [successMsg, setSuccessMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Reset password request:", data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    const result = await resetPassword(data);
+    if (result.success) {
+      setSuccessMsg(result.message);
+      reset();
+    }
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="card w-full max-w-md shadow-xl bg-base-100">
         <div className="card-body">
+          {errorMessage && <ErrorMessageAlert error={errorMessage} />}
+          {successMsg && <SuccessMessageAlert message={successMsg} />}
           <h2 className="text-2xl font-bold text-center">Reset Password</h2>
           <p className="text-sm text-center text-base-content/70">
             Enter your email address and we'll send you instructions to reset
@@ -46,8 +63,13 @@ const ResetPass = () => {
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary w-full">
-              Send Reset Link
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full flex items-center justify-center gap-2"
+            >
+              {loading && <span className="loading loading-spinner"></span>}
+              {loading ? "Sending..." : "Send Reset Link"}
             </button>
           </form>
 

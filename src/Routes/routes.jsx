@@ -11,6 +11,7 @@ import PrivateRoute from "../Components/PrivateRoute/PrivateRoute";
 import ActivateAccount from "../Components/ActivateAccount/ActivateAccount";
 import Profile from "../Components/Profile/Profile";
 import NotFound from "../Components/NotFound/NotFound";
+import PassResetConfirm from "../Components/PassResetConfirm/PassResetConfirm";
 
 const isLoggedIn = true;
 export const router = createBrowserRouter([
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       { path: "/about", Component: About },
       { path: "activate/:uid/:token", Component: ActivateAccount },
       { path: "profile", Component: Profile },
+      {
+        path: "password/reset/confirm/:uid/:token",
+        Component: PassResetConfirm,
+      },
     ],
   },
   {
