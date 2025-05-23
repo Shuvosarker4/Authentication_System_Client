@@ -6,6 +6,8 @@ import ErrorMessageAlert from "../ErrorMessage/ErrorMessageAlert";
 import SuccessMessageAlert from "../SuccessMessage/SuccessMessageAlert";
 
 const Registration = () => {
+  const [loading, setLoading] = useState(false);
+
   const {
     reset,
     register,
@@ -21,6 +23,7 @@ const Registration = () => {
 
   const onSubmit = async (data) => {
     delete data.confirmPassword;
+    setLoading(true);
     try {
       const result = await registerUser(data);
       if (result.success) {
@@ -29,6 +32,8 @@ const Registration = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,8 +181,12 @@ const Registration = () => {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary w-full mt-4">
-              Register
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full mt-4"
+            >
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 

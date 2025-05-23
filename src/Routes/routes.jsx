@@ -9,6 +9,8 @@ import About from "../Components/About/About";
 import Secret from "../Components/Secret/Secret";
 import PrivateRoute from "../Components/PrivateRoute/PrivateRoute";
 import ActivateAccount from "../Components/ActivateAccount/ActivateAccount";
+import Profile from "../Components/Profile/Profile";
+import NotFound from "../Components/NotFound/NotFound";
 
 const isLoggedIn = true;
 export const router = createBrowserRouter([
@@ -23,6 +25,7 @@ export const router = createBrowserRouter([
       },
       { path: "/about", Component: About },
       { path: "activate/:uid/:token", Component: ActivateAccount },
+      { path: "profile", Component: Profile },
     ],
   },
   {
@@ -33,5 +36,9 @@ export const router = createBrowserRouter([
       { path: "/registration", Component: Registration },
       { path: "/forgot-password", Component: ResetPass },
     ],
+  },
+  {
+    path: "*",
+    Component: NotFound,
   },
 ]);

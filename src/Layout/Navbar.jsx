@@ -8,7 +8,7 @@ const Navbar = () => {
   const navLinks = (
     <>
       <li>
-        <Link to="/secret">Secret</Link>
+        <Link to="/secret">Secret Code</Link>
       </li>
       <li>
         <Link to="/about">About Us</Link>
@@ -21,10 +21,7 @@ const Navbar = () => {
       {user ? (
         <>
           <li>
-            <Link to="/profile">Profile</Link>
-          </li>
-          <li>
-            <Link to="/settings">Settings</Link>
+            <Link to="/profile">Profile Settings</Link>
           </li>
           <li>
             <Link onClick={logoutUser}>Logout</Link>
@@ -68,10 +65,7 @@ const Navbar = () => {
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
       >
         <li>
-          <Link to="/profile">Profile</Link>
-        </li>
-        <li>
-          <Link to="/settings">Settings</Link>
+          <Link to="/profile">Profile Settings</Link>
         </li>
         <li>
           <Link onClick={logoutUser}>Logout</Link>

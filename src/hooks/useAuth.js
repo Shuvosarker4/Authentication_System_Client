@@ -55,6 +55,41 @@ const useAuth = () => {
     }
   };
 
+  const updateUserProfile = async (data) => {
+    setErrorMessage("");
+    try {
+      await authClient.put("/auth/users/me/", data, {
+        headers: {
+          Authorization: `JWT ${authTokens?.access}`,
+        },
+      });
+      return {
+        success: true,
+        message: "Profile Updated Successful.",
+      };
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
+  // Password Change
+  const changePassword = async (data) => {
+    setErrorMessage("");
+    try {
+      await authClient.post("/auth/users/set_password/", data, {
+        headers: {
+          Authorization: `JWT ${authTokens?.access}`,
+        },
+      });
+      return {
+        success: true,
+        message: "Password Change Successful.",
+      };
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
+
   // register a user
   const registerUser = async (userData) => {
     setErrorMessage("");
@@ -97,6 +132,8 @@ const useAuth = () => {
     fetchUserProfile,
     user,
     logoutUser,
+    updateUserProfile,
+    changePassword,
   };
 };
 

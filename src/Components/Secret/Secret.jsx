@@ -1,7 +1,19 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuthContext from "../../hooks/useAuthContext";
 
 const Secret = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   return (
     <div
