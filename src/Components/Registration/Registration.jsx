@@ -1,6 +1,21 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Registration = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const password = watch("password");
+
+  const onSubmit = (data) => {
+    delete data.confirmPassword;
+    console.log("Registration Data:", data);
+  };
+
   return (
     <div className="min-h-screen bg-base-200 px-4 py-6 flex flex-col items-center justify-center relative">
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
@@ -17,7 +32,7 @@ const Registration = () => {
         <div className="card-body">
           <h2 className="text-2xl font-bold text-center">Create an Account</h2>
 
-          <form className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="label">
@@ -27,7 +42,15 @@ const Registration = () => {
                   type="text"
                   placeholder="John"
                   className="input input-bordered w-full"
+                  {...register("firstName", {
+                    required: "First name is required",
+                  })}
                 />
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -38,7 +61,15 @@ const Registration = () => {
                   type="text"
                   placeholder="Doe"
                   className="input input-bordered w-full"
+                  {...register("lastName", {
+                    required: "Last name is required",
+                  })}
                 />
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.lastName.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -50,7 +81,13 @@ const Registration = () => {
                 type="email"
                 placeholder="example@mail.com"
                 className="input input-bordered w-full"
+                {...register("email", { required: "Email is required" })}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -61,7 +98,40 @@ const Registration = () => {
                 type="password"
                 placeholder="••••••••"
                 className="input input-bordered w-full"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="label">
+                <span className="label-text">Confirm Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="input input-bordered w-full"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === password || "Passwords do not match",
+                })}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -72,6 +142,7 @@ const Registration = () => {
                 type="text"
                 placeholder="123 Main St, City, ZIP"
                 className="input input-bordered w-full"
+                {...register("address")}
               />
             </div>
 
@@ -83,6 +154,7 @@ const Registration = () => {
                 type="tel"
                 placeholder="+1 234 567 8901"
                 className="input input-bordered w-full"
+                {...register("phone")}
               />
             </div>
 

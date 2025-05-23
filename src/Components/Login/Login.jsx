@@ -1,9 +1,23 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onsubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <div className="min-h-screen bg-base-200 px-4 py-6 flex flex-col items-center justify-center relative">
-      {/* Back to Home Button (Top-left, Responsive) */}
+      {/* Back to Home Button */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
         <Link
           to="/"
@@ -19,7 +33,8 @@ const Login = () => {
         <div className="card-body pt-10">
           <h2 className="text-2xl font-bold text-center">Login</h2>
 
-          <form className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit(onsubmit)} className="space-y-4 mt-4">
+            {/* Email */}
             <div>
               <label className="label">
                 <span className="label-text">Email</span>
@@ -28,18 +43,45 @@ const Login = () => {
                 type="email"
                 className="input input-bordered w-full"
                 placeholder="Enter your email"
+                {...register("email", {
+                  required: "Email address must be required",
+                })}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
+            {/* Password */}
             <div>
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                className="input input-bordered w-full"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="input input-bordered w-full pr-12"
+                  placeholder="Enter your password"
+                  {...register("password", {
+                    required: "Password must be required",
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
               <label className="label justify-end">
                 <Link to="/forgot-password" className="link link-primary">
                   Forgot password?

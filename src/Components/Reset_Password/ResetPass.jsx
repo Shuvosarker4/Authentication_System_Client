@@ -1,6 +1,17 @@
 import { Link } from "react-router";
+import { useForm } from "react-hook-form";
 
 const ResetPass = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log("Reset password request:", data);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="card w-full max-w-md shadow-xl bg-base-100">
@@ -11,16 +22,28 @@ const ResetPass = () => {
             your password.
           </p>
 
-          <form className="space-y-4 mt-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
             <div>
               <label className="label">
                 <span className="label-text">Email Address</span>
               </label>
               <input
                 type="email"
-                placeholder="example@email.com"
                 className="input input-bordered w-full"
+                placeholder="example@email.com"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <button type="submit" className="btn btn-primary w-full">
